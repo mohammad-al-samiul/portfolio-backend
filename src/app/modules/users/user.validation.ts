@@ -1,16 +1,24 @@
 import { z } from "zod";
 const createUserValidationSchema = z.object({
   body: z.object({
-    name: z.string().nonempty({ message: "Name is required" }),
-    email: z
-      .string()
-      .email({ message: "Invalid email format" })
-      .nonempty({ message: "Email is required" }),
+    userData: z.object({
+      name: z.string({
+        required_error: "Name is required",
+      }),
+      email: z
+        .string({
+          required_error: "Email is required",
+        })
+        .email({ message: "Invalid email format" }),
+      password: z.string({
+        required_error: "Password is required",
+        invalid_type_error: "Passowrd must be a string",
+      }),
+      phone: z.number().optional(),
+      address: z.string().optional(),
+      role: z.enum(["admin", "user"]).default("user"),
+    }),
   }),
-  password: z.string().nonempty({ message: "Password is required" }),
-  phone: z.number().optional(),
-  address: z.string().optional(),
-  role: z.enum(["admin", "user"]),
 });
 
 export const UserValidation = {
