@@ -1,7 +1,8 @@
 import express, { Request, Response } from "express";
 import cors from "cors";
 import router from "./app/routes";
-import errorHandler from "./app/middleware/errorHandler";
+
+import notFound from "./app/middleware/notFound";
 const app = express();
 
 app.use(express.json());
@@ -13,6 +14,6 @@ app.get("/", (req: Request, res: Response) => {
   res.send("Hello World!");
 });
 
-app.use(errorHandler);
+app.use(notFound);
 
 export default app;
