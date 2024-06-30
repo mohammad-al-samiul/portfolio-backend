@@ -1,5 +1,5 @@
-import { TUser } from "./user.interface";
-import { User } from "./user.model";
+import { TUser } from "./auth.interface";
+import { User } from "./auth.model";
 
 const createUserIntoDB = async (payload: TUser) => {
   const result = await User.create(payload);

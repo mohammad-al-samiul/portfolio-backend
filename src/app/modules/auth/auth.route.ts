@@ -1,11 +1,11 @@
 import express from "express";
-import { UserControllers } from "./user.controller";
+import { UserControllers } from "./auth.controller";
 import validateRequest from "../../middleware/validateRequest";
-import { UserValidation } from "./user.validation";
+import { UserValidation } from "./auth.validation";
 const router = express.Router();
 
 router.post(
-  "/create-user",
+  "/signup",
   validateRequest(UserValidation.createUserValidationSchema),
   UserControllers.createUser
 );

@@ -1,4 +1,8 @@
 import mongoose, { Schema } from "mongoose";
+import AppError from "../../errors/AppError";
+import httpStatus from "http-status";
+import bcrypt from "bcrypt";
+import config from "../../config";
 
 const userSchema = new Schema(
   {
@@ -13,7 +17,7 @@ const userSchema = new Schema(
     password: {
       type: String,
       required: true,
-      //select : 0,
+      select: 0,
     },
     phone: {
       type: Number,
@@ -35,5 +39,21 @@ const userSchema = new Schema(
     timestamps: true,
   }
 );
+
+//hash password
+userSchema.pre("save", async function (next) {
+  const isUserExist = await User.findOne({ email: this.email });
+  if (isUserExist) {
+    throw new AppError(
+      httpStatus.CONFLICT,
+      "A user is already exist by this email"
+    );
+  }
+  this.password = await bcrypt.hash(
+    this.password,
+    Number(config.bcrypt_salt_rounds)
+  );
+  next();
+});
 
 export const User = mongoose.model("User", userSchema);
