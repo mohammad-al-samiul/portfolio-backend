@@ -3,6 +3,8 @@ import AppError from "../../errors/AppError";
 import { TLoginUser, TUser } from "./auth.interface";
 import { User } from "./auth.model";
 import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
+import config from "../../config";
 
 const createUserIntoDB = async (payload: TUser) => {
   const result = await User.create(payload);
@@ -27,6 +29,16 @@ const loginUserFromDB = async (payload: TLoginUser) => {
   if (!isPasswordMatch) {
     throw new AppError(httpStatus.UNAUTHORIZED, "Password is incorrect!");
   }
+
+  //generate access token
+  const jwtPayload = {
+    email: isUserExist?.email,
+    role: isUserExist?.role,
+  };
+
+  const accessToken = jwt.sign(jwtPayload, config.jwt_access_secret, {
+    expiresIn: "10d",
+  });
 };
 
 export const UserServices = {
