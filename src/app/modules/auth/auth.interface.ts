@@ -7,3 +7,8 @@ export type TUser = {
   role: "admin" | "user";
   isDeleted: boolean;
 };
+
+export type TLoginUser = {
+  email: string;
+  password: string;
+};
