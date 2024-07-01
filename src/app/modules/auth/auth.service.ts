@@ -15,6 +15,7 @@ const loginUserFromDB = async (payload: TLoginUser) => {
   const isUserExist = await User.findOne({ email: payload.email }).select(
     "+password"
   );
+  const user = isUserExist;
   //check if a user with this email
   if (!isUserExist) {
     throw new AppError(httpStatus.NOT_FOUND, "User not found with this email!");
@@ -41,6 +42,7 @@ const loginUserFromDB = async (payload: TLoginUser) => {
   });
   return {
     accessToken,
+    user,
   };
 };
 
