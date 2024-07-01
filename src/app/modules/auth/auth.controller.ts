@@ -2,6 +2,7 @@ import httpStatus from "http-status";
 import catchAsync from "../../utils/catchAsync";
 import { UserServices } from "./auth.service";
 import sendResponse from "../../utils/sendResponse";
+import config from "../../config";
 
 const createUser = catchAsync(async (req, res) => {
   const { userData } = req.body;
@@ -20,7 +21,11 @@ const createUser = catchAsync(async (req, res) => {
 const loginUser = catchAsync(async (req, res) => {
   const { userData } = req.body;
   const result = await UserServices.loginUserFromDB(userData);
-  const { accessToken, user } = result;
+  const { accessToken, refreshToken, user } = result;
+  res.cookie("refreshToken", refreshToken, {
+    secure: config.node_env === "production",
+    httpOnly: true,
+  });
   sendResponse(res, {
     success: true,
     statusCode: httpStatus.OK,

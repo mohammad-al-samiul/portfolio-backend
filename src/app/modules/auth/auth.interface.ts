@@ -15,4 +15,9 @@ export type TLoginUser = {
   password: string;
 };
 
+export type TJwtPayload = {
+  email: string;
+  role: string;
+};
+
 export type TUserRole = keyof typeof USER_ROLE;

@@ -3,8 +3,8 @@ import AppError from "../../errors/AppError";
 import { TLoginUser, TUser } from "./auth.interface";
 import { User } from "./auth.model";
 import bcrypt from "bcrypt";
-import jwt from "jsonwebtoken";
 import config from "../../config";
+import createToken from "./auth.utils";
 
 const createUserIntoDB = async (payload: TUser) => {
   const result = await User.create(payload);
@@ -37,11 +37,21 @@ const loginUserFromDB = async (payload: TLoginUser) => {
     role: isUserExist?.role,
   };
 
-  const accessToken = jwt.sign(jwtPayload, config.jwt_access_secret as string, {
-    expiresIn: "10d",
-  });
+  const accessToken = createToken(
+    jwtPayload,
+    config.jwt_access_secret as string,
+    config.jwt_access_expires_in as string
+  );
+
+  const refreshToken = createToken(
+    jwtPayload,
+    config.jwt_refresh_secret as string,
+    config.jwt_refresh_expires_in as string
+  );
+
   return {
     accessToken,
+    refreshToken,
     user,
   };
 };
