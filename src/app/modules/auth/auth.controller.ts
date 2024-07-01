@@ -35,6 +35,18 @@ const loginUser = catchAsync(async (req, res) => {
   });
 });
 
+const refreshToken = catchAsync(async (req, res) => {
+  const { refreshToken } = req.cookies;
+  const result = await UserServices.refreshToken(refreshToken);
+
+  sendResponse(res, {
+    success: true,
+    statusCode: httpStatus.CREATED,
+    message: "Access token retrieved successfully!",
+    data: result,
+  });
+});
+
 const getAllUser = catchAsync(async (req, res) => {
   const result = await UserServices.getAllUserFromDB();
   sendResponse(res, {
@@ -48,5 +60,6 @@ const getAllUser = catchAsync(async (req, res) => {
 export const UserControllers = {
   createUser,
   loginUser,
+  refreshToken,
   getAllUser,
 };

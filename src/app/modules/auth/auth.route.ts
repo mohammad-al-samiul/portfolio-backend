@@ -18,6 +18,12 @@ router.post(
   UserControllers.loginUser
 );
 
+router.post(
+  "/refresh-token",
+  validateRequest(UserValidation.refreshTokenValidationSchema),
+  UserControllers.refreshToken
+);
+
 router.get("/users", auth(USER_ROLE.admin), UserControllers.getAllUser);
 
 export const userRoutes = router;

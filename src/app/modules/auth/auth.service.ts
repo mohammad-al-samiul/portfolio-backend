@@ -5,6 +5,7 @@ import { User } from "./auth.model";
 import bcrypt from "bcrypt";
 import config from "../../config";
 import createToken from "./auth.utils";
+import jwt, { JwtPayload } from "jsonwebtoken";
 
 const createUserIntoDB = async (payload: TUser) => {
   const result = await User.create(payload);
@@ -61,8 +62,34 @@ const getAllUserFromDB = async () => {
   return result;
 };
 
+const refreshToken = async (token: string) => {
+  const decoded = jwt.verify(token, config.jwt_refresh_secret as string);
+  // console.log("decoded : ", decoded);
+  const { email } = decoded as JwtPayload;
+
+  const user = await User.findOne({ email });
+  if (!user) {
+    throw new AppError(httpStatus.NOT_FOUND, "User not found!");
+  }
+  const jwtPayload = {
+    email: user.email,
+    role: user.role,
+  };
+
+  const accessToken = createToken(
+    jwtPayload,
+    config.jwt_access_secret as string,
+    config.jwt_access_expires_in as string
+  );
+
+  return {
+    accessToken,
+  };
+};
+
 export const UserServices = {
   createUserIntoDB,
   loginUserFromDB,
   getAllUserFromDB,
+  refreshToken,
 };
