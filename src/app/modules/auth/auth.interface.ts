@@ -1,3 +1,5 @@
+import { USER_ROLE } from "./auth.constant";
+
 export type TUser = {
   name: string;
   email: string;
@@ -12,3 +14,5 @@ export type TLoginUser = {
   email: string;
   password: string;
 };
+
+export type TUserRole = keyof typeof USER_ROLE;

@@ -44,7 +44,13 @@ const loginUserFromDB = async (payload: TLoginUser) => {
   };
 };
 
+const getAllUserFromDB = async () => {
+  const result = await User.find();
+  return result;
+};
+
 export const UserServices = {
   createUserIntoDB,
   loginUserFromDB,
+  getAllUserFromDB,
 };
