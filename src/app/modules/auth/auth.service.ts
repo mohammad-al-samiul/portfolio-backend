@@ -21,7 +21,7 @@ const loginUserFromDB = async (payload: TLoginUser) => {
   }
 
   //compare password using bcrypt
-  const isPasswordMatch = bcrypt.compare(
+  const isPasswordMatch = await bcrypt.compare(
     payload?.password,
     isUserExist?.password
   );
