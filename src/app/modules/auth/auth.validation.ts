@@ -27,10 +27,10 @@ const loginUserValidationSchema = z.object({
       email: z
         .string({ required_error: "Email is required" })
         .email({ message: "Invalid Email format!" }),
-    }),
-    password: z.string({
-      required_error: "Password is required!",
-      invalid_type_error: "Password must be string",
+      password: z.string({
+        required_error: "Password is required!",
+        invalid_type_error: "Password must be string",
+      }),
     }),
   }),
 });
