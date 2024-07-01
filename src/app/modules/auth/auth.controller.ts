@@ -20,6 +20,7 @@ const createUser = catchAsync(async (req, res) => {
 const loginUser = catchAsync(async (req, res) => {
   const { userData } = req.body;
   const result = await UserServices.loginUserFromDB(userData);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { accessToken } = result;
 
   sendResponse(res, {
