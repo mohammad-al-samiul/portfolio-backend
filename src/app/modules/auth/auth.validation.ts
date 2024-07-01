@@ -21,6 +21,21 @@ const createUserValidationSchema = z.object({
   }),
 });
 
+const loginUserValidationSchema = z.object({
+  body: z.object({
+    userData: z.object({
+      email: z
+        .string({ required_error: "Email is required" })
+        .email({ message: "Invalid Email format!" }),
+    }),
+    password: z.string({
+      required_error: "Password is required!",
+      invalid_type_error: "Password must be string",
+    }),
+  }),
+});
+
 export const UserValidation = {
   createUserValidationSchema,
+  loginUserValidationSchema,
 };

@@ -36,9 +36,12 @@ const loginUserFromDB = async (payload: TLoginUser) => {
     role: isUserExist?.role,
   };
 
-  const accessToken = jwt.sign(jwtPayload, config.jwt_access_secret, {
+  const accessToken = jwt.sign(jwtPayload, config.jwt_access_secret as string, {
     expiresIn: "10d",
   });
+  return {
+    accessToken,
+  };
 };
 
 export const UserServices = {
