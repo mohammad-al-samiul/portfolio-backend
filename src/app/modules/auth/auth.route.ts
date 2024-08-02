@@ -26,4 +26,6 @@ router.post(
 
 router.get("/users", auth(USER_ROLE.admin), UserControllers.getAllUser);
 
+router.get("/me", UserControllers.getProfile);
+
 export const userRoutes = router;

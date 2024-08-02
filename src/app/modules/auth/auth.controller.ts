@@ -57,9 +57,21 @@ const getAllUser = catchAsync(async (req, res) => {
   });
 });
 
+const getProfile = catchAsync(async (req, res) => {
+  const token = req.headers.authorization;
+  const result = await UserServices.getProfileFromDB(token!);
+  sendResponse(res, {
+    success: true,
+    statusCode: httpStatus.OK,
+    message: "User profile retrieved successfully!",
+    data: result,
+  });
+});
+
 export const UserControllers = {
   createUser,
   loginUser,
   refreshToken,
   getAllUser,
+  getProfile,
 };
