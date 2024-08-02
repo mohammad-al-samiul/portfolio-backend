@@ -64,13 +64,14 @@ const getAllUserFromDB = async () => {
 
 const refreshToken = async (token: string) => {
   const decoded = jwt.verify(token, config.jwt_refresh_secret as string);
-  // console.log("decoded : ", decoded);
+  //console.log("decoded : ", decoded); //email and role
   const { email } = decoded as JwtPayload;
 
   const user = await User.findOne({ email });
   if (!user) {
     throw new AppError(httpStatus.NOT_FOUND, "User not found!");
   }
+
   const jwtPayload = {
     email: user.email,
     role: user.role,
@@ -87,9 +88,20 @@ const refreshToken = async (token: string) => {
   };
 };
 
+//get user profile with access token
+const getProfileFromDB = async (token: string) => {
+  const { email, role } = jwt.verify(
+    token,
+    config.jwt_access_secret as string
+  ) as JwtPayload;
+  const user = await User.findOne({ email, role });
+  return user;
+};
+
 export const UserServices = {
   createUserIntoDB,
   loginUserFromDB,
   getAllUserFromDB,
   refreshToken,
+  getProfileFromDB,
 };
