@@ -1,6 +1,6 @@
 import httpStatus from "http-status";
 import AppError from "../../errors/AppError";
-import { TLoginUser, TUser } from "./auth.interface";
+import { TLoginUser, TUpdateUser, TUser } from "./auth.interface";
 import { User } from "./auth.model";
 import bcrypt from "bcrypt";
 import config from "../../config";
@@ -98,10 +98,25 @@ const getProfileFromDB = async (token: string) => {
   return user;
 };
 
+const updateProfileFromDB = async (payload: TUpdateUser, token: string) => {
+  const { email, role } = jwt.verify(
+    token,
+    config.jwt_access_secret as string
+  ) as JwtPayload;
+  const isUserExist = await User.findOne({ email, role });
+  if (!isUserExist) {
+    throw new AppError(httpStatus.UNAUTHORIZED, "You are not authorized");
+  }
+  const result = await User.findOneAndUpdate({ email, role }, payload, {
+    new: true,
+  }).select("-isDeleted -createdAt -updatedAt -__v");
+  return result;
+};
 export const UserServices = {
   createUserIntoDB,
   loginUserFromDB,
   getAllUserFromDB,
   refreshToken,
   getProfileFromDB,
+  updateProfileFromDB,
 };

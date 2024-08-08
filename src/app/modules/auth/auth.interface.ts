@@ -15,6 +15,11 @@ export type TLoginUser = {
   password: string;
 };
 
+export type TUpdateUser = {
+  name?: string;
+  phone?: number;
+};
+
 export type TJwtPayload = {
   email: string;
   role: string;

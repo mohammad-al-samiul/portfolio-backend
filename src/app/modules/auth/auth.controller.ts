@@ -5,7 +5,7 @@ import sendResponse from "../../utils/sendResponse";
 import config from "../../config";
 
 const createUser = catchAsync(async (req, res) => {
-  const { userData } = req.body;
+  const userData = req.body;
   const result = await UserServices.createUserIntoDB(userData);
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { password, ...userDataFromDB } = result.toObject();
@@ -19,7 +19,7 @@ const createUser = catchAsync(async (req, res) => {
 });
 
 const loginUser = catchAsync(async (req, res) => {
-  const { userData } = req.body;
+  const userData = req.body;
   const result = await UserServices.loginUserFromDB(userData);
   const { accessToken, refreshToken, user } = result;
   res.cookie("refreshToken", refreshToken, {
@@ -68,10 +68,23 @@ const getProfile = catchAsync(async (req, res) => {
   });
 });
 
+const updateProfile = catchAsync(async (req, res) => {
+  const updatedDoc = req.body;
+  const token = req.headers.authorization as string;
+  const result = await UserServices.updateProfileFromDB(updatedDoc, token);
+  sendResponse(res, {
+    success: true,
+    statusCode: httpStatus.OK,
+    message: "Profile updated successfully!",
+    data: result,
+  });
+});
+
 export const UserControllers = {
   createUser,
   loginUser,
   refreshToken,
   getAllUser,
   getProfile,
+  updateProfile,
 };
