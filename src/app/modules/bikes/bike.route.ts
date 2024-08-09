@@ -23,6 +23,8 @@ bikeRouter.put(
   BikeController.updateBike
 );
 
+bikeRouter.delete("/:id", auth(USER_ROLE.admin), BikeController.deleteBike);
+
 export const bikeRoutes = {
   bikeRouter,
 };
