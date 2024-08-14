@@ -23,17 +23,18 @@ const createRentalIntoDB = async (payload: TRental, decodInfo: JwtPayload) => {
 
     const result = await Rental.create([payload], { session });
 
-    await Bike.findOne(
+    await Bike.findOneAndUpdate(
       { _id: payload.bikeId },
       { isAvailable: false },
       { new: true, session }
     );
 
     await session.commitTransaction();
-    session.endSession();
     return result;
   } catch (error) {
     await session.abortTransaction();
+    session.endSession();
+  } finally {
     session.endSession();
   }
 };

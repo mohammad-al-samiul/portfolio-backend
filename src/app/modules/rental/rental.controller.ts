@@ -14,6 +14,7 @@ const createRental = catchAsync(async (req, res) => {
   ) as JwtPayload;
 
   const result = await RentalServices.createRentalIntoDB(rentalInfo, decoded);
+
   sendResponse(res, {
     success: true,
     statusCode: httpStatus.OK,

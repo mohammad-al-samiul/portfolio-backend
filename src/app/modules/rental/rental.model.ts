@@ -7,6 +7,7 @@ const rentalSchema = new Schema<TRental>({
   },
   bikeId: {
     type: Schema.Types.ObjectId,
+    required: true,
   },
   startTime: {
     type: String,
@@ -14,15 +15,15 @@ const rentalSchema = new Schema<TRental>({
   },
   returnTime: {
     type: String,
-    required: true,
+    default: null,
   },
   totalCost: {
     type: Number,
-    required: true,
+    default: 0,
   },
   isReturned: {
     type: Boolean,
-    required: true,
+    default: false,
   },
 });
 
