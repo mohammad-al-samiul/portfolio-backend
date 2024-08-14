@@ -1,6 +1,6 @@
 import { JwtPayload } from "jsonwebtoken";
 import { TRental } from "./rental.interface";
-import mongoose from "mongoose";
+import mongoose, { Types } from "mongoose";
 import { User } from "../auth/auth.model";
 import AppError from "../../errors/AppError";
 import httpStatus from "http-status";
@@ -18,7 +18,7 @@ const createRentalIntoDB = async (payload: TRental, decodInfo: JwtPayload) => {
       throw new AppError(httpStatus.UNAUTHORIZED, "User is not authorized");
     }
 
-    const userId = user._id;
+    const userId = user._id as Types.ObjectId;
     payload.userId = userId;
 
     const result = await Rental.create([payload], { session });
