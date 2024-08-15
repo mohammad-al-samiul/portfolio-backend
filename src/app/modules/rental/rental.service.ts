@@ -21,12 +21,12 @@ const createRentalIntoDB = async (payload: TRental, decodInfo: JwtPayload) => {
     const userId = user._id as Types.ObjectId;
     payload.userId = userId;
 
-    const result = await Rental.create([payload], { session });
+    const result = await Rental.create([payload], { session }); //return array
 
     await Bike.findOneAndUpdate(
       { _id: payload.bikeId },
       { isAvailable: false },
-      { new: true, session }
+      { session }
     );
 
     await session.commitTransaction();
@@ -39,6 +39,55 @@ const createRentalIntoDB = async (payload: TRental, decodInfo: JwtPayload) => {
   }
 };
 
+const returnBikeIntoDB = async (id: string) => {
+  const session = await mongoose.startSession();
+
+  try {
+    session.startTransaction();
+
+    const rental = await Rental.findOne({ _id: id });
+    if (!rental) {
+      throw new AppError(httpStatus.NOT_FOUND, "Invalid ID");
+    }
+
+    const bike = await Bike.findOne({ _id: rental.bikeId });
+    if (!bike) {
+      throw new AppError(httpStatus.NOT_FOUND, "Bike not found!");
+    }
+
+    // calculate cost based on time
+    const returnTime = new Date().toISOString().split(".")[0] + "Z";
+    const startTime = new Date(rental?.startTime); // TypeScript already infers this as Date
+    const timeDifference = new Date(returnTime).getTime() - startTime.getTime(); // Use .getTime() to get the time in milliseconds
+    const totalHours = timeDifference / (1000 * 60 * 60);
+    const totalCost = bike.pricePerHour * totalHours;
+
+    const updateDoc = {
+      isReturned: true,
+      returnTime,
+      totalCost: totalCost.toFixed(2),
+    };
+    const result = await Rental.findOneAndUpdate({ _id: id }, updateDoc, {
+      new: true,
+      session,
+    });
+
+    await Bike.findOneAndUpdate(
+      { _id: rental.bikeId },
+      { isAvailable: true },
+      { session }
+    );
+
+    await session.commitTransaction();
+    session.endSession();
+    return result;
+  } catch (error) {
+    await session.abortTransaction();
+    session.endSession();
+  }
+};
+
 export const RentalServices = {
   createRentalIntoDB,
+  returnBikeIntoDB,
 };
