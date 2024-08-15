@@ -14,7 +14,7 @@ const createUserIntoDB = async (payload: TUser) => {
 
 const loginUserFromDB = async (payload: TLoginUser) => {
   const isUserExist = await User.findOne({ email: payload.email }).select(
-    "+password -createdAt updatedAt"
+    "+password -createdAt -updatedAt"
   );
 
   const user = isUserExist;

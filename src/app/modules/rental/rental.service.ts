@@ -79,10 +79,11 @@ const returnBikeIntoDB = async (id: string) => {
     );
 
     await session.commitTransaction();
-    session.endSession();
     return result;
   } catch (error) {
     await session.abortTransaction();
+    session.endSession();
+  } finally {
     session.endSession();
   }
 };
