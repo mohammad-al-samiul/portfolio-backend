@@ -88,7 +88,19 @@ const returnBikeIntoDB = async (id: string) => {
   }
 };
 
+const getAllRentalsIntoDB = async (decodedInfo: JwtPayload) => {
+  const { email, role } = decodedInfo;
+  const user = await User.findOne({ email, role });
+  if (!user) {
+    throw new AppError(httpStatus.UNAUTHORIZED, "User is not authorized!");
+  }
+
+  const result = await Rental.find({ userId: user._id });
+  return result;
+};
+
 export const RentalServices = {
   createRentalIntoDB,
   returnBikeIntoDB,
+  getAllRentalsIntoDB,
 };

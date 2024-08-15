@@ -35,7 +35,24 @@ const returnBike = catchAsync(async (req, res) => {
   });
 });
 
+const getRentals = catchAsync(async (req, res) => {
+  const token = req.headers.authorization as string;
+  const decoded = jwt.verify(
+    token,
+    config.jwt_access_secret as string
+  ) as JwtPayload;
+
+  const result = await RentalServices.getAllRentalsIntoDB(decoded);
+  sendResponse(res, {
+    success: true,
+    statusCode: httpStatus.OK,
+    message: "Rentals retrieved successfully!",
+    data: result,
+  });
+});
+
 export const RentalControllers = {
   createRental,
   returnBike,
+  getRentals,
 };

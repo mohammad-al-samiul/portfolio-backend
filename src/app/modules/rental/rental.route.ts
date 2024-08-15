@@ -19,4 +19,6 @@ rentalRouter.put(
   RentalControllers.returnBike
 );
 
+rentalRouter.get("/", RentalControllers.getRentals);
+
 export const rentalRoutes = { rentalRouter };
