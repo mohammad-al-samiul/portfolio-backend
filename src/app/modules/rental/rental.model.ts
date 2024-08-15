@@ -1,9 +1,10 @@
-import mongoose, { Schema } from "mongoose";
+import { Schema } from "mongoose";
 import { TRental } from "./rental.interface";
 import { Bike } from "../bikes/bike.model";
 import AppError from "../../errors/AppError";
 import httpStatus from "http-status";
 import { User } from "../auth/auth.model";
+import { model } from "mongoose";
 
 const rentalSchema = new Schema<TRental>({
   userId: {
@@ -31,8 +32,9 @@ const rentalSchema = new Schema<TRental>({
   },
 });
 
-rentalSchema.pre("save", async function () {
-  const isBikeExist = await Bike.findOne({ _id: this.bikeId });
+rentalSchema.pre("save", async function (next) {
+  const isBikeExist = await Bike.findOne({ _id: this?.bikeId });
+
   if (!isBikeExist) {
     throw new AppError(httpStatus.NOT_FOUND, "Bike not found!");
   }
@@ -44,10 +46,11 @@ rentalSchema.pre("save", async function () {
     );
   }
 
-  const isUserExist = await User.findOne({ _id: this.userId });
+  const isUserExist = await User.findOne({ _id: this?.userId });
   if (!isUserExist) {
     throw new AppError(httpStatus.NOT_FOUND, "User is not found!");
   }
+  next();
 });
 
-export const Rental = mongoose.model<TRental>("Rental", rentalSchema);
+export const Rental = model<TRental>("Rental", rentalSchema);
