@@ -5,5 +5,6 @@ export interface IProject {
   techStack: string[];
   github: string;
   live: string;
+  features: string[];
   imageUrl?: string;
 }

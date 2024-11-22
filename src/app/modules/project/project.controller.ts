@@ -32,6 +32,16 @@ const getAllProjects = catchAsync(async (req, res) => {
     data: result,
   });
 });
+const getOneProject = catchAsync(async (req, res) => {
+  const result = await ProjectServices.getOneProjectsFromDB(req.params.id);
+
+  sendResponse(res, {
+    success: true,
+    statusCode: httpStatus.OK,
+    message: "Projects retrieved successfully",
+    data: result,
+  });
+});
 
 /**
  * Controller to update a project by ID.
@@ -67,6 +77,7 @@ const deleteProject = catchAsync(async (req, res) => {
 export const ProjectController = {
   createProject,
   getAllProjects,
+  getOneProject,
   updateProject,
   deleteProject,
 };

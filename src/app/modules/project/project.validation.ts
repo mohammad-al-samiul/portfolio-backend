@@ -20,6 +20,15 @@ const createProjectValidationSchema = z.object({
       .nonempty({
         message: "Tech stack must contain at least one technology",
       }),
+    features: z
+      .array(
+        z.string({
+          required_error: "Each features must be a string",
+        })
+      )
+      .nonempty({
+        message: "Features must contain at least one",
+      }),
     github: z.string({
       required_error: "GitHub URL is required",
     }),
@@ -52,6 +61,16 @@ const updateProjectValidationSchema = z.object({
           required_error: "Each technology in the stack must be a string",
         })
       )
+      .optional(),
+    features: z
+      .array(
+        z.string({
+          required_error: "Each features must be a string",
+        })
+      )
+      .nonempty({
+        message: "Features must contain at least one",
+      })
       .optional(),
     github: z
       .string({

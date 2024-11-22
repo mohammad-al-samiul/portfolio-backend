@@ -13,7 +13,11 @@ const createProjectIntoDB = async (image: any, payload: IProject) => {
 };
 
 const getAllProjectsFromDB = async () => {
-  const result = await Project.find().select("-createdAt -updatedAt -__v");
+  const result = await Project.find().select("-__v");
+  return result;
+};
+const getOneProjectsFromDB = async (id: string) => {
+  const result = await Project.findOne({ _id: id });
   return result;
 };
 
@@ -35,6 +39,7 @@ const deleteProjectFromDB = async (id: string) => {
 export const ProjectServices = {
   createProjectIntoDB,
   getAllProjectsFromDB,
+  getOneProjectsFromDB,
   updateProjectFromDB,
   deleteProjectFromDB,
 };

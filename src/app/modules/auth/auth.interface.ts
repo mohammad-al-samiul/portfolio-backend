@@ -8,7 +8,6 @@ export type TUser = {
   phone?: number; //optional phone number
   address?: string; //optional address
   role: "admin" | "user";
-
   isDeleted: boolean;
 };
 

@@ -38,6 +38,7 @@ const loginUserFromDB = async (payload: TLoginUser) => {
   const jwtPayload = {
     email: isUserExist?.email,
     role: isUserExist?.role,
+    image: isUserExist?.image,
   };
 
   const accessToken = createToken(
@@ -77,6 +78,7 @@ const refreshToken = async (token: string) => {
   const jwtPayload = {
     email: user.email,
     role: user.role,
+    image: user.image,
   };
 
   const accessToken = createToken(
@@ -92,24 +94,24 @@ const refreshToken = async (token: string) => {
 
 //get user profile with access token
 const getProfileFromDB = async (token: string) => {
-  const { email, role } = jwt.verify(
+  const { email, role, image } = jwt.verify(
     token,
     config.jwt_access_secret as string
   ) as JwtPayload;
-  const user = await User.findOne({ email, role });
+  const user = await User.findOne({ email, role, image });
   return user;
 };
 
 const updateProfileFromDB = async (payload: TUpdateUser, token: string) => {
-  const { email, role } = jwt.verify(
+  const { email, role, image } = jwt.verify(
     token,
     config.jwt_access_secret as string
   ) as JwtPayload;
-  const isUserExist = await User.findOne({ email, role });
+  const isUserExist = await User.findOne({ email, role, image });
   if (!isUserExist) {
     throw new AppError(httpStatus.UNAUTHORIZED, "You are not authorized");
   }
-  const result = await User.findOneAndUpdate({ email, role }, payload, {
+  const result = await User.findOneAndUpdate({ email, role, image }, payload, {
     new: true,
   }).select("-isDeleted -createdAt -updatedAt -__v");
   return result;

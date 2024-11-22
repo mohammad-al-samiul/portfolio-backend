@@ -22,6 +22,7 @@ projectRouter.post(
 );
 
 projectRouter.get("/", ProjectController.getAllProjects);
+projectRouter.get("/:id", ProjectController.getOneProject);
 
 projectRouter.put(
   "/:id",

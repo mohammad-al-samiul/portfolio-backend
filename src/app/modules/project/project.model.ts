@@ -21,6 +21,10 @@ const projectSchema = new Schema<IProject>(
       type: [String], // Array of strings
       required: true,
     },
+    features: {
+      type: [String], // Array of strings
+      required: true,
+    },
     github: {
       type: String,
       required: true,

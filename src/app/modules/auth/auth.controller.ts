@@ -20,8 +20,10 @@ const createUser = catchAsync(async (req, res) => {
 
 const loginUser = catchAsync(async (req, res) => {
   const userData = req.body;
+  //console.log("user", userData);
   const result = await UserServices.loginUserFromDB(userData);
-  const { accessToken, refreshToken, user } = result;
+  const { accessToken, refreshToken } = result;
+
   res.cookie("refreshToken", refreshToken, {
     secure: config.node_env === "production",
     httpOnly: true,
@@ -30,8 +32,7 @@ const loginUser = catchAsync(async (req, res) => {
     success: true,
     statusCode: httpStatus.OK,
     message: "User logged in successfully!",
-    token: accessToken,
-    data: user,
+    data: { accessToken, refreshToken },
   });
 });
 
