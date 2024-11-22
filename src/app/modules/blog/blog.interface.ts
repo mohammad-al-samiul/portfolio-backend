@@ -22,10 +22,9 @@ export interface IBlogPost {
   publishedDate: string;
   categories: string[];
   content: Array<
-    | { type: string; text: string }
-    | { type: "image"; src: string; alt: string }
-    | { type: "quote"; text: string }
+    { type: string; text: string } | { type: "quote"; text: string }
   >;
+  contentImage?: string;
   tags: string[];
   comments: IComment[];
 }

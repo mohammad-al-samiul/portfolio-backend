@@ -1,102 +1,50 @@
 import mongoose, { Schema } from "mongoose";
-import { IBlogPost } from "./blog.interface";
+import { IAuthor, IBlogPost, IComment } from "./blog.interface";
 import httpStatus from "http-status";
 import AppError from "../../errors/AppError";
 
-const authorSchema = new Schema(
-  {
-    name: {
-      type: String,
-      required: true,
-    },
-    profilePicture: {
-      type: String,
-      required: true,
-    },
-    bio: {
-      type: String,
-      required: true,
-    },
-    socialLinks: {
-      twitter: {
-        type: String,
-        required: true,
-      },
-      github: {
-        type: String,
-        required: true,
-      },
-    },
-  },
-  { _id: false } // Avoid creating an _id for the subdocument
-);
+// Comment Schema
+const commentSchema = new Schema<IComment>({
+  id: { type: Number, required: true },
+  author: { type: String, required: true },
+  comment: { type: String, required: true },
+  date: { type: String, required: true },
+});
 
-const commentSchema = new Schema(
-  {
-    id: {
-      type: Number,
-      required: true,
-    },
-    author: {
-      type: String,
-      required: true,
-    },
-    comment: {
-      type: String,
-      required: true,
-    },
-    date: {
-      type: String,
-      required: true,
-    },
+// Author Schema
+const authorSchema = new Schema<IAuthor>({
+  name: { type: String, required: true },
+  profilePicture: { type: String, required: true },
+  bio: { type: String, required: true },
+  socialLinks: {
+    twitter: { type: String, required: true },
+    github: { type: String, required: true },
   },
-  { _id: false } // Avoid creating an _id for the subdocument
-);
+});
 
+// BlogPost Schema
 const blogPostSchema = new Schema<IBlogPost>(
   {
-    title: {
-      type: String,
-      required: true,
-    },
-    author: {
-      type: authorSchema,
-      required: true,
-    },
-    publishedDate: {
-      type: String,
-      required: true,
-    },
-    categories: {
-      type: [String],
-      required: true,
-    },
+    id: { type: Number, required: true },
+    title: { type: String, required: true },
+    author: { type: authorSchema, required: true },
+    publishedDate: { type: String, required: true },
+    categories: { type: [String], required: true },
     content: [
       {
-        type: {
-          type: String,
-          required: true,
-        },
-        text: {
-          type: String,
-        },
-        src: {
-          type: String,
-        },
-        alt: {
-          type: String,
-        },
+        type: { type: String, required: true },
+        text: { type: String, required: true },
+      },
+      {
+        type: { type: String, required: true },
+        text: { type: String, required: true },
       },
     ],
-    tags: {
-      type: [String],
-      required: true,
-    },
-    comments: [commentSchema],
+    contentImage: { type: String, required: false },
+    tags: { type: [String], required: true },
+    comments: { type: [commentSchema], required: true },
   },
-  {
-    timestamps: true, // Adds `createdAt` and `updatedAt`
-  }
+  { timestamps: true } // Adds createdAt and updatedAt fields
 );
 
 // Middleware to check if a blog post with the same title exists before saving
