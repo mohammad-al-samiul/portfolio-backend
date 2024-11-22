@@ -4,9 +4,11 @@ export type TUser = {
   name: string;
   email: string;
   password: string;
+  image?: string;
   phone?: number; //optional phone number
   address?: string; //optional address
   role: "admin" | "user";
+
   isDeleted: boolean;
 };
 

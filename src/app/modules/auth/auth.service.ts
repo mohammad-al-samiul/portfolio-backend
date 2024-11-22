@@ -8,6 +8,7 @@ import createToken from "./auth.utils";
 import jwt, { JwtPayload } from "jsonwebtoken";
 
 const createUserIntoDB = async (payload: TUser) => {
+  payload.image = "http://surl.li/wvqjwj";
   const result = await User.create(payload);
   return result;
 };

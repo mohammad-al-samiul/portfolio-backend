@@ -8,6 +8,8 @@ const handleDuplicateError = (err: any): TErrorResponse => {
   // The extracted value will be in the first capturing group
   const extractedMessage = match && match[1];
 
+  console.log("err", err);
+
   const errorSources: TErrorSources = [
     {
       path: "",

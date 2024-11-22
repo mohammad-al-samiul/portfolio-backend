@@ -30,6 +30,9 @@ const userSchema = new Schema(
       enum: ["admin", "user"],
       default: "user",
     },
+    image: {
+      type: String,
+    },
     isDeleted: {
       type: Boolean,
       default: false,
