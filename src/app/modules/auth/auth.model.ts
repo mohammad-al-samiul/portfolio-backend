@@ -22,6 +22,9 @@ const userSchema = new Schema(
     phone: {
       type: Number,
     },
+    bio: {
+      type: String,
+    },
     address: {
       type: String,
     },

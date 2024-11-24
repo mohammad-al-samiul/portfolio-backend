@@ -5,6 +5,7 @@ export type TUser = {
   email: string;
   password: string;
   image?: string;
+  bio?: string;
   phone?: number; //optional phone number
   address?: string; //optional address
   role: "admin" | "user";

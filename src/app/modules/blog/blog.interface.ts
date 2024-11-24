@@ -1,30 +1,17 @@
-export interface IAuthor {
-  name: string;
-  profilePicture: string;
-  bio: string;
-  socialLinks: {
-    twitter: string;
-    github: string;
-  };
+import { Types } from "mongoose";
+
+export interface IBlogPost {
+  title: string;
+  author?: Types.ObjectId; // Reference to User model
+  content: string;
+  publishedDate?: Date;
+  categories: string[];
+  tags: string[];
+  comments?: IComment[];
 }
 
 export interface IComment {
-  id: number;
-  author: string;
+  author: Types.ObjectId; // Reference to User model
   comment: string;
-  date: string;
-}
-
-export interface IBlogPost {
-  id: number;
-  title: string;
-  author: IAuthor;
-  publishedDate: string;
-  categories: string[];
-  content: Array<
-    { type: string; text: string } | { type: "quote"; text: string }
-  >;
-  contentImage?: string;
-  tags: string[];
-  comments: IComment[];
+  date?: Date;
 }

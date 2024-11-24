@@ -1,47 +1,31 @@
-import { multerUpload } from "../../config/multer.config";
-import express, { NextFunction, Request, Response } from "express";
-import validateRequest from "../../middleware/validateRequest";
-import { blogValidation } from "./blog.validation";
-import { USER_ROLE } from "../auth/auth.constant";
-import auth from "../../middleware/auth";
+import express from "express";
 import { BlogPostController } from "./blog.controller";
 
-const blogRouter = express.Router();
+import { blogPostValidation } from "./blog.validation";
+import validateRequest from "../../middleware/validateRequest";
+import auth from "../../middleware/auth";
+import { USER_ROLE } from "../auth/auth.constant";
 
-// Route to create a blog post
-blogRouter.post(
+const router = express.Router();
+
+router.post(
   "/",
-  multerUpload.single("image"), // Image upload
-  (req: Request, res: Response, next: NextFunction) => {
-    req.body = JSON.parse(req.body.data); // Parse the data if it's sent as a JSON string
-    next();
-  },
-  validateRequest(blogValidation.createBlogValidationSchema), // Validate the request body
-  auth(USER_ROLE.admin), // Only allow admin users to create blog posts
+  validateRequest(blogPostValidation.createBlogPostValidation),
+  auth(USER_ROLE.admin),
   BlogPostController.createBlogPost
 );
 
-// Route to get all blog posts
-blogRouter.get("/", BlogPostController.getAllBlogPosts);
+router.get("/", BlogPostController.getAllBlogPosts);
 
-// Route to get a single blog post by ID
-blogRouter.get("/:id", BlogPostController.getOneBlogPost);
+router.get("/:id", BlogPostController.getBlogPostById);
 
-// Route to update a blog post by ID
-blogRouter.put(
+router.patch(
   "/:id",
-  validateRequest(blogValidation.updateBlogValidationSchema), // Validate the request body
-  auth(USER_ROLE.admin), // Only allow admin users to update blog posts
+  validateRequest(blogPostValidation.updateBlogPostValidation),
+  auth(USER_ROLE.admin),
   BlogPostController.updateBlogPost
 );
 
-// Route to delete a blog post by ID
-blogRouter.delete(
-  "/:id",
-  auth(USER_ROLE.admin), // Only allow admin users to delete blog posts
-  BlogPostController.deleteBlogPost
-);
+router.delete("/:id", auth(USER_ROLE.admin), BlogPostController.deleteBlogPost);
 
-export const blogRoutes = {
-  blogRouter,
-};
+export const BlogPostRoutes = router;

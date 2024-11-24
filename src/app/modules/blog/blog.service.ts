@@ -1,59 +1,55 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import { IBlogPost } from "./blog.interface";
 import { BlogPost } from "./blog.model";
+import { IBlogPost } from "./blog.interface";
+import AppError from "../../errors/AppError";
+import httpStatus from "http-status";
+import { Types } from "mongoose";
 
-// Service to create a new blog post
-const createBlogPostIntoDB = async (image: any, payload: IBlogPost) => {
-  const image_url = image?.path; // Get image URL if provided
+const createBlogPost = async (userId: Types.ObjectId, payload: IBlogPost) => {
+  payload.author = userId;
 
-  // If contentImage exists, use the uploaded image URL
-  if (image_url) {
-    payload.contentImage = image_url;
-  }
-
-  // Process content to handle image URLs if any content type is "image"
-
-  // Create a new blog post in the database
   const result = await BlogPost.create(payload);
   return result;
 };
 
-// Service to get all blog posts
-const getAllBlogPostsFromDB = async () => {
-  const result = await BlogPost.find().select("-__v"); // Exclude the __v field
+const getAllBlogPosts = async () => {
+  const result = await BlogPost.find()
+    .populate("author", "name email bio image")
+    .populate("comments.author", "name email");
   return result;
 };
 
-// Service to get a single blog post by its ID
-const getOneBlogPostFromDB = async (id: string) => {
-  const result = await BlogPost.findOne({ _id: id }).select("-__v"); // Exclude the __v field
+const getBlogPostById = async (id: string) => {
+  const result = await BlogPost.findById(id)
+    .populate("author", "name email")
+    .populate("comments.author", "name email");
+  if (!result) {
+    throw new AppError(httpStatus.NOT_FOUND, "Blog post not found!");
+  }
   return result;
 };
 
-// Service to update a blog post
-const updateBlogPostFromDB = async (
-  payload: Partial<IBlogPost>,
-  id: string
-) => {
-  const result = await BlogPost.findOneAndUpdate({ _id: id }, payload, {
-    new: true, // Return the updated document
-  }).select("-createdAt -updatedAt -__v"); // Exclude timestamps and __v
+const updateBlogPost = async (id: string, payload: Partial<IBlogPost>) => {
+  const result = await BlogPost.findByIdAndUpdate(id, payload, {
+    new: true,
+  }).populate("author", "name email");
+  if (!result) {
+    throw new AppError(httpStatus.NOT_FOUND, "Blog post not found!");
+  }
   return result;
 };
 
-// Service to delete a blog post
-const deleteBlogPostFromDB = async (id: string) => {
-  const result = await BlogPost.findOneAndDelete(
-    { _id: id },
-    { lean: true } // Return a plain JavaScript object instead of a Mongoose document
-  ).select("-createdAt -updatedAt -__v"); // Exclude timestamps and __v
+const deleteBlogPost = async (id: string) => {
+  const result = await BlogPost.findByIdAndDelete(id);
+  if (!result) {
+    throw new AppError(httpStatus.NOT_FOUND, "Blog post not found!");
+  }
   return result;
 };
 
-export const BlogPostServices = {
-  createBlogPostIntoDB,
-  getAllBlogPostsFromDB,
-  getOneBlogPostFromDB,
-  updateBlogPostFromDB,
-  deleteBlogPostFromDB,
+export const BlogPostService = {
+  createBlogPost,
+  getAllBlogPosts,
+  getBlogPostById,
+  updateBlogPost,
+  deleteBlogPost,
 };

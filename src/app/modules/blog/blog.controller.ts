@@ -1,18 +1,13 @@
-import httpStatus from "http-status";
-import sendResponse from "../../utils/sendResponse";
 import catchAsync from "../../utils/catchAsync";
-import { BlogPostServices } from "./blog.service";
+import { Request, Response } from "express";
+import { BlogPostService } from "./blog.service";
+import sendResponse from "../../utils/sendResponse";
+import httpStatus from "http-status";
 
-/**
- * Controller to create a new blog post.
- */
-const createBlogPost = catchAsync(async (req, res) => {
-  const blogPostInfo = req.body;
-
-  const result = await BlogPostServices.createBlogPostIntoDB(
-    req.file, // If there is an image file
-    blogPostInfo
-  );
+const createBlogPost = catchAsync(async (req: Request, res: Response) => {
+  const { _id } = req.user;
+  const blogData = req.body;
+  const result = await BlogPostService.createBlogPost(_id, blogData);
 
   sendResponse(res, {
     success: true,
@@ -22,11 +17,8 @@ const createBlogPost = catchAsync(async (req, res) => {
   });
 });
 
-/**
- * Controller to retrieve all blog posts.
- */
-const getAllBlogPosts = catchAsync(async (req, res) => {
-  const result = await BlogPostServices.getAllBlogPostsFromDB();
+const getAllBlogPosts = catchAsync(async (req: Request, res: Response) => {
+  const result = await BlogPostService.getAllBlogPosts();
 
   sendResponse(res, {
     success: true,
@@ -36,11 +28,9 @@ const getAllBlogPosts = catchAsync(async (req, res) => {
   });
 });
 
-/**
- * Controller to retrieve a single blog post by ID.
- */
-const getOneBlogPost = catchAsync(async (req, res) => {
-  const result = await BlogPostServices.getOneBlogPostFromDB(req.params.id);
+const getBlogPostById = catchAsync(async (req: Request, res: Response) => {
+  const id = req.params.id;
+  const result = await BlogPostService.getBlogPostById(id);
 
   sendResponse(res, {
     success: true,
@@ -50,14 +40,11 @@ const getOneBlogPost = catchAsync(async (req, res) => {
   });
 });
 
-/**
- * Controller to update a blog post by ID.
- */
-const updateBlogPost = catchAsync(async (req, res) => {
-  const updateDoc = req.body;
+const updateBlogPost = catchAsync(async (req: Request, res: Response) => {
   const id = req.params.id;
+  const updateData = req.body;
+  const result = await BlogPostService.updateBlogPost(id, updateData);
 
-  const result = await BlogPostServices.updateBlogPostFromDB(updateDoc, id);
   sendResponse(res, {
     success: true,
     statusCode: httpStatus.OK,
@@ -66,12 +53,9 @@ const updateBlogPost = catchAsync(async (req, res) => {
   });
 });
 
-/**
- * Controller to delete a blog post by ID.
- */
-const deleteBlogPost = catchAsync(async (req, res) => {
+const deleteBlogPost = catchAsync(async (req: Request, res: Response) => {
   const id = req.params.id;
-  const result = await BlogPostServices.deleteBlogPostFromDB(id);
+  const result = await BlogPostService.deleteBlogPost(id);
 
   sendResponse(res, {
     success: true,
@@ -84,7 +68,7 @@ const deleteBlogPost = catchAsync(async (req, res) => {
 export const BlogPostController = {
   createBlogPost,
   getAllBlogPosts,
-  getOneBlogPost,
+  getBlogPostById,
   updateBlogPost,
   deleteBlogPost,
 };

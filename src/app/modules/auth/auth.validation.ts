@@ -14,6 +14,7 @@ const createUserValidationSchema = z.object({
       invalid_type_error: "Passowrd must be a string",
     }),
     phone: z.number().optional(),
+    bio: z.string().optional(),
     address: z.string().optional(),
     role: z.enum(["admin", "user"]).default("user"),
   }),

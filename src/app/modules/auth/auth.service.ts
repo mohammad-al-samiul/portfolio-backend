@@ -36,6 +36,7 @@ const loginUserFromDB = async (payload: TLoginUser) => {
 
   //generate access token
   const jwtPayload = {
+    _id: isUserExist._id,
     email: isUserExist?.email,
     role: isUserExist?.role,
     image: isUserExist?.image,
@@ -76,6 +77,7 @@ const refreshToken = async (token: string) => {
   }
 
   const jwtPayload = {
+    _id: user._id,
     email: user.email,
     role: user.role,
     image: user.image,
